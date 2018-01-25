@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.SystemDictionaryMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.SystemDictionary">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="sn" jdbcType="VARCHAR" property="sn"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="intro" jdbcType="VARCHAR" property="intro"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, sn, title, intro
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from system_dictionary
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from system_dictionary
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.SystemDictionary"
+            useGeneratedKeys="true">
+    insert into system_dictionary (sn, title, intro
+      )
+    values (#{sn,jdbcType=VARCHAR}, #{title,jdbcType=VARCHAR}, #{intro,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.SystemDictionary"
+            useGeneratedKeys="true">
+        insert into system_dictionary
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="sn != null">
+                sn,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="intro != null">
+                intro,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="sn != null">
+                #{sn,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="intro != null">
+                #{intro,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.SystemDictionary">
+        update system_dictionary
+        <set>
+            <if test="sn != null">
+                sn = #{sn,jdbcType=VARCHAR},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="intro != null">
+                intro = #{intro,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.SystemDictionary">
+    update system_dictionary
+    set sn = #{sn,jdbcType=VARCHAR},
+      title = #{title,jdbcType=VARCHAR},
+      intro = #{intro,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <sql id="condition">
+        <where>
+            <if test="keyword != null">
+                AND (title LIKE concat('%',#{keyword},'%') OR sn LIKE concat('%',#{keyword},'%'))
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectSystemDics" parameterType="com.yff.base.query.SystemDictionaryQueryObject"
+            resultType="com.yff.base.domain.SystemDictionary">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from system_dictionary
+        <include refid="condition"/>
+    </select>
+
+    <select id="selectAll" resultType="com.yff.base.domain.SystemDictionary">
+        SELECT
+        <include refid="Base_Column_List"/>
+        from system_dictionary
+    </select>
+
+</mapper>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.SystemDictionaryItemMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.SystemDictionaryItem">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="parent_id" jdbcType="BIGINT" property="parentId"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="sequence" jdbcType="TINYINT" property="sequence"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, parent_id, title, sequence
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from system_dictionary_item
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from system_dictionary_item
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.SystemDictionaryItem"
+            useGeneratedKeys="true">
+    insert into system_dictionary_item (parent_id, title, sequence
+      )
+    values (#{parentId,jdbcType=BIGINT}, #{title,jdbcType=VARCHAR}, #{sequence,jdbcType=TINYINT}
+      )
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+            parameterType="com.yff.base.domain.SystemDictionaryItem" useGeneratedKeys="true">
+        insert into system_dictionary_item
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">
+                parent_id,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="sequence != null">
+                sequence,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="parentId != null">
+                #{parentId,jdbcType=BIGINT},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="sequence != null">
+                #{sequence,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.SystemDictionaryItem">
+        update system_dictionary_item
+        <set>
+            <if test="parentId != null">
+                parent_id = #{parentId,jdbcType=BIGINT},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="sequence != null">
+                sequence = #{sequence,jdbcType=TINYINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.SystemDictionaryItem">
+    update system_dictionary_item
+    set parent_id = #{parentId,jdbcType=BIGINT},
+      title = #{title,jdbcType=VARCHAR},
+      sequence = #{sequence,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <sql id="condition">
+        <where>
+            <if test="keyword != null">
+                AND title like concat ('%',#{keyword},'%')
+            </if>
+            <if test="parentId != null">
+                AND parent_id=#{parentId}
+            </if>
+        </where>
+    </sql>
+
+    <select id="selectSystemDicItems" parameterType="com.yff.base.query.SystemDictionaryQueryObject"
+            resultType="com.yff.base.domain.SystemDictionaryItem">
+
+        SELECT
+        <include refid="Base_Column_List"/>
+        from system_dictionary_item
+        <include refid="condition"/>
+    </select>
+
+
+    <select id="selectByParentSn" parameterType="string" resultType="com.yff.base.domain.SystemDictionaryItem">
+
+    SELECT item.id,item.title
+    FROM system_dictionary_item item
+    INNER JOIN system_dictionary d
+    ON item.parent_id = d.id
+    WHERE d.sn = #{sn}
+    ORDER BY item.sequence ASC ;
+
+  </select>
+</mapper>

@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.PaymentScheduleDetailMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.PaymentScheduleDetail">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="bid_amount" jdbcType="DECIMAL" property="bidAmount"/>
+        <result column="bid_id" jdbcType="BIGINT" property="bidId"/>
+        <result column="total_amount" jdbcType="DECIMAL" property="totalAmount"/>
+        <result column="principal" jdbcType="DECIMAL" property="principal"/>
+        <result column="interest" jdbcType="DECIMAL" property="interest"/>
+        <result column="month_index" jdbcType="TINYINT" property="monthIndex"/>
+        <result column="dead_line" jdbcType="TIMESTAMP" property="deadLine"/>
+        <result column="bid_request_id" jdbcType="BIGINT" property="bidRequestId"/>
+        <result column="pay_date" jdbcType="TIMESTAMP" property="payDate"/>
+        <result column="return_type" jdbcType="TINYINT" property="returnType"/>
+        <result column="payment_schedule_id" jdbcType="BIGINT" property="paymentScheduleId"/>
+        <result column="to_login_info_id" jdbcType="BIGINT" property="toLoginInfoId"/>
+        <!--<result column="from_login_info_id" jdbcType="BIGINT" property="fromLoginInfoId"/>-->
+        <association property="fromLoginInfo" javaType="com.yff.base.domain.LoginInfo" columnPrefix="b_">
+            <id property="id" column="id"></id>
+            <result property="username" column="username"/>
+        </association>
+    </resultMap>
+    <sql id="Base_Column_List">
+    p.id, p.bid_amount, p.bid_id, p.total_amount, p.principal, p.interest, p.month_index, p.dead_line,
+    p.bid_request_id, p.pay_date, p.return_type, p.payment_schedule_id, p.to_login_info_id,
+    b.id as b_id,b.username as b_username
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from payment_schedule_detail p
+        INNER JOIN login_info b ON p.from_login_info_id = b.id
+        where p.id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from payment_schedule_detail
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.PaymentScheduleDetail"
+            useGeneratedKeys="true">
+    insert into payment_schedule_detail (bid_amount, bid_id, total_amount, 
+      principal, interest, month_index, 
+      dead_line, bid_request_id, pay_date, 
+      return_type, payment_schedule_id, from_login_info_id, 
+      to_login_info_id)
+    values (#{bidAmount,jdbcType=DECIMAL}, #{bidId,jdbcType=BIGINT}, #{totalAmount,jdbcType=DECIMAL}, 
+      #{principal,jdbcType=DECIMAL}, #{interest,jdbcType=DECIMAL}, #{monthIndex,jdbcType=TINYINT}, 
+      #{deadLine,jdbcType=TIMESTAMP}, #{bidRequestId,jdbcType=BIGINT}, #{payDate,jdbcType=TIMESTAMP}, 
+      #{returnType,jdbcType=TINYINT}, #{paymentScheduleId,jdbcType=BIGINT}, #{fromLoginInfo.id,jdbcType=BIGINT},
+      #{toLoginInfoId,jdbcType=BIGINT})
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id"
+            parameterType="com.yff.base.domain.PaymentScheduleDetail" useGeneratedKeys="true">
+        insert into payment_schedule_detail
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bidAmount != null">
+                bid_amount,
+            </if>
+            <if test="bidId != null">
+                bid_id,
+            </if>
+            <if test="totalAmount != null">
+                total_amount,
+            </if>
+            <if test="principal != null">
+                principal,
+            </if>
+            <if test="interest != null">
+                interest,
+            </if>
+            <if test="monthIndex != null">
+                month_index,
+            </if>
+            <if test="deadLine != null">
+                dead_line,
+            </if>
+            <if test="bidRequestId != null">
+                bid_request_id,
+            </if>
+            <if test="payDate != null">
+                pay_date,
+            </if>
+            <if test="returnType != null">
+                return_type,
+            </if>
+            <if test="paymentScheduleId != null">
+                payment_schedule_id,
+            </if>
+            <if test="fromLoginInfo != null and fromLoginInfoId != null">
+                from_login_info_id,
+            </if>
+            <if test="toLoginInfoId != null">
+                to_login_info_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bidAmount != null">
+                #{bidAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="bidId != null">
+                #{bidId,jdbcType=BIGINT},
+            </if>
+            <if test="totalAmount != null">
+                #{totalAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="principal != null">
+                #{principal,jdbcType=DECIMAL},
+            </if>
+            <if test="interest != null">
+                #{interest,jdbcType=DECIMAL},
+            </if>
+            <if test="monthIndex != null">
+                #{monthIndex,jdbcType=TINYINT},
+            </if>
+            <if test="deadLine != null">
+                #{deadLine,jdbcType=TIMESTAMP},
+            </if>
+            <if test="bidRequestId != null">
+                #{bidRequestId,jdbcType=BIGINT},
+            </if>
+            <if test="payDate != null">
+                #{payDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="returnType != null">
+                #{returnType,jdbcType=TINYINT},
+            </if>
+            <if test="paymentScheduleId != null">
+                #{paymentScheduleId,jdbcType=BIGINT},
+            </if>
+            <if test="fromLoginInfo != null and fromLoginInfoId != null">
+                #{fromLoginInfo.id,jdbcType=BIGINT},
+            </if>
+            <if test="toLoginInfoId != null">
+                #{toLoginInfoId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.PaymentScheduleDetail">
+        update payment_schedule_detail
+        <set>
+            <if test="bidAmount != null">
+                bid_amount = #{bidAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="bidId != null">
+                bid_id = #{bidId,jdbcType=BIGINT},
+            </if>
+            <if test="totalAmount != null">
+                total_amount = #{totalAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="principal != null">
+                principal = #{principal,jdbcType=DECIMAL},
+            </if>
+            <if test="interest != null">
+                interest = #{interest,jdbcType=DECIMAL},
+            </if>
+            <if test="monthIndex != null">
+                month_index = #{monthIndex,jdbcType=TINYINT},
+            </if>
+            <if test="deadLine != null">
+                dead_line = #{deadLine,jdbcType=TIMESTAMP},
+            </if>
+            <if test="bidRequestId != null">
+                bid_request_id = #{bidRequestId,jdbcType=BIGINT},
+            </if>
+            <if test="payDate != null">
+                pay_date = #{payDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="returnType != null">
+                return_type = #{returnType,jdbcType=TINYINT},
+            </if>
+            <if test="paymentScheduleId != null">
+                payment_schedule_id = #{paymentScheduleId,jdbcType=BIGINT},
+            </if>
+            <if test="fromLoginInfo != null and fromLoginInfoId != null">
+                from_login_info_id = #{fromLoginInfo.id,jdbcType=BIGINT},
+            </if>
+            <if test="toLoginInfoId != null">
+                to_login_info_id = #{toLoginInfoId,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.PaymentScheduleDetail">
+    update payment_schedule_detail
+    set bid_amount = #{bidAmount,jdbcType=DECIMAL},
+      bid_id = #{bidId,jdbcType=BIGINT},
+      total_amount = #{totalAmount,jdbcType=DECIMAL},
+      principal = #{principal,jdbcType=DECIMAL},
+      interest = #{interest,jdbcType=DECIMAL},
+      month_index = #{monthIndex,jdbcType=TINYINT},
+      dead_line = #{deadLine,jdbcType=TIMESTAMP},
+      bid_request_id = #{bidRequestId,jdbcType=BIGINT},
+      pay_date = #{payDate,jdbcType=TIMESTAMP},
+      return_type = #{returnType,jdbcType=TINYINT},
+      payment_schedule_id = #{paymentScheduleId,jdbcType=BIGINT},
+      from_login_info_id = #{fromLoginInfo.id,jdbcType=BIGINT},
+      to_login_info_id = #{toLoginInfoId,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="selectByPaymentScheduleId" parameterType="long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from payment_schedule_detail p
+        INNER JOIN login_info b ON p.from_login_info_id = b.id
+        where p.payment_schedule_id = #{paymentScheduleId}
+    </select>
+</mapper>

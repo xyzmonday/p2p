@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+    <!--配置全局属性 -->
+    <settings>
+        <!--使用jdbc的getGeneratekeys获取自增主键值，默认是false
+            当inert一条记录时我们是不插入id的，id是通过自增去赋值的
+            当插入完后想得到该插入记录的id时可以调用jdbc的getGeneratekeys -->
+        <setting name="useGeneratedKeys" value="true"/>
+
+        <!--使用列别名替换列名 默认值为true（可以不用写出来，这里写出来只是为了讲解该配置的作用）
+            select name as title(实体中的属性名是title) form table;
+            开启后mybatis会自动帮我们把表中name的值赋到对应实体的title属性中 -->
+        <setting name="useColumnLabel" value="true"/>
+
+        <!--开启驼峰命名转换Table:create_time到 Entity(createTime) -->
+        <setting name="mapUnderscoreToCamelCase" value="true"/>
+
+        <!-- 打印查询语句 -->
+        <setting name="logImpl" value="STDOUT_LOGGING"/>
+
+        <!--关于mybatis的n+1问题。
+            在级联查询（association,collect）中，当我们查询1时，却将发送了n条sql
+            语句查询association或者collect属性。解决该问题的方法：
+            lazyLoadingEnabled: lazy loading开关,默认为true
+            aggressiveLazyLoading: 侵略性 lazy loading 开关, 默认为true,
+            如果为true则当你访问任何一个属性（可以是和关联无关的属性）都会加载所有的其他lazy load属性,
+            即使你根本没有调用哪个lazy load属性,说白了就是aggressiveLazyLoading=true,
+            则lazy load等于没用,所以要使用lazy load还是将其设为false
+        -->
+        <!--这里不使用懒加载，如果有嵌套查询那么发送一个sql语句将所有的结果都查询出来-->
+        <setting name="lazyLoadingEnabled" value="false"/>
+        <setting name="aggressiveLazyLoading" value="false"/>
+        <setting name="lazyLoadTriggerMethods" value="equals,clone,hashCode"/>
+    </settings>
+
+    <!-- 配置别名 -->
+    <typeAliases>
+        <!-- 批量扫描别名  -->
+        <package name="com.yff.base.base.domain"/>
+    </typeAliases>
+
+    <plugins>
+        <plugin interceptor="com.github.pagehelper.PageInterceptor">
+            <!--调整分页合理化，当pageNum<=0只查询第一页，末页类似-->
+            <property name="reasonable" value="true"></property>
+        </plugin>
+    </plugins>
+</configuration>

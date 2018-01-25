@@ -1,0 +1,296 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.BidRequestMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.BidRequest">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
+        <result column="return_type" jdbcType="TINYINT" property="returnType"/>
+        <result column="bid_request_type" jdbcType="TINYINT" property="bidRequestType"/>
+        <result column="bid_request_state" jdbcType="TINYINT" property="bidRequestState"/>
+        <result column="bid_request_amount" jdbcType="DECIMAL" property="bidRequestAmount"/>
+        <result column="current_rate" jdbcType="DECIMAL" property="currentRate"/>
+        <result column="monthes2_return" jdbcType="TINYINT" property="monthes2Return"/>
+        <result column="bid_count" jdbcType="INTEGER" property="bidCount"/>
+        <result column="total_reward_amount" jdbcType="DECIMAL" property="totalRewardAmount"/>
+        <result column="current_sum" jdbcType="DECIMAL" property="currentSum"/>
+        <result column="title" jdbcType="VARCHAR" property="title"/>
+        <result column="description" jdbcType="VARCHAR" property="description"/>
+        <result column="note" jdbcType="VARCHAR" property="note"/>
+        <result column="disable_date" jdbcType="TIMESTAMP" property="disableDate"/>
+        <result column="disable_days" jdbcType="TINYINT" property="disableDays"/>
+        <result column="min_bid_amount" jdbcType="DECIMAL" property="minBidAmount"/>
+        <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime"/>
+        <result column="publish_time" jdbcType="TIMESTAMP" property="publishTime"/>
+
+        <!--对于借款人，采用内联查询-->
+        <association property="createUser" javaType="com.yff.base.domain.LoginInfo" columnPrefix="cu_">
+            <id property="id" column="id"/>
+            <result property="username" column="username"/>
+        </association>
+
+        <!--对于投标人，采用嵌套查询。注意这里使用ofType-->
+        <collection property="bids" column="id" ofType="com.yff.base.domain.Bid"
+                    select="com.yff.base.mapper.BidMapper.selectByBidRequestId"></collection>
+
+    </resultMap>
+    <sql id="Base_Column_List">
+    b.id, b.version,b.return_type, b.bid_request_type, b.bid_request_state, b.bid_request_amount, b.current_rate,
+    b.monthes2_return, b.bid_count, b.total_reward_amount, b.current_sum, b.title, b.description,
+    b.note, b.disable_date, b.disable_days, b.min_bid_amount, b.apply_time, b.publish_time,
+    cu.id as cu_id,cu.username as cu_username
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bid_request b INNER JOIN login_info cu ON b.create_user_id = cu.id
+        where b.id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from bid_request
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.BidRequest"
+            useGeneratedKeys="true">
+    insert into bid_request (version, return_type,bid_request_type, bid_request_state,
+      bid_request_amount, current_rate, monthes2_return, 
+      bid_count, total_reward_amount, current_sum, 
+      title, description, note, 
+      disable_date, create_user_id, disable_days, 
+      min_bid_amount, apply_time, publish_time
+      )
+    values (0,#{returnType,jdbcType=TINYINT}, #{bidRequestType,jdbcType=TINYINT}, #{bidRequestState,jdbcType=TINYINT},
+      #{bidRequestAmount,jdbcType=DECIMAL}, #{currentRate,jdbcType=DECIMAL}, #{monthes2Return,jdbcType=TINYINT}, 
+      #{bidCount,jdbcType=INTEGER}, #{totalRewardAmount,jdbcType=DECIMAL}, #{currentSum,jdbcType=DECIMAL}, 
+      #{title,jdbcType=VARCHAR}, #{description,jdbcType=VARCHAR}, #{note,jdbcType=VARCHAR}, 
+      #{disableDate,jdbcType=TIMESTAMP}, #{createUser.id,jdbcType=BIGINT}, #{disableDays,jdbcType=TINYINT},
+      #{minBidAmount,jdbcType=DECIMAL}, #{applyTime,jdbcType=TIMESTAMP}, #{publishTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.BidRequest"
+            useGeneratedKeys="true">
+        insert into bid_request
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            version,
+            <if test="returnType != null">
+                return_type,
+            </if>
+            <if test="bidRequestType != null">
+                bid_request_type,
+            </if>
+            <if test="bidRequestState != null">
+                bid_request_state,
+            </if>
+            <if test="bidRequestAmount != null">
+                bid_request_amount,
+            </if>
+            <if test="currentRate != null">
+                current_rate,
+            </if>
+            <if test="monthes2Return != null">
+                monthes2_return,
+            </if>
+            <if test="bidCount != null">
+                bid_count,
+            </if>
+            <if test="totalRewardAmount != null">
+                total_reward_amount,
+            </if>
+            <if test="currentSum != null">
+                current_sum,
+            </if>
+            <if test="title != null">
+                title,
+            </if>
+            <if test="description != null">
+                description,
+            </if>
+            <if test="note != null">
+                note,
+            </if>
+            <if test="disableDate != null">
+                disable_date,
+            </if>
+            <if test="createUser ！= null and createUser.id != null">
+                create_user_id,
+            </if>
+            <if test="disableDays != null">
+                disable_days,
+            </if>
+            <if test="minBidAmount != null">
+                min_bid_amount,
+            </if>
+            <if test="applyTime != null">
+                apply_time,
+            </if>
+            <if test="publishTime != null">
+                publish_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            0,
+            <if test="returnType != null">
+                #{returnType,jdbcType=TINYINT},
+            </if>
+            <if test="bidRequestType != null">
+                #{bidRequestType,jdbcType=TINYINT},
+            </if>
+            <if test="bidRequestState != null">
+                #{bidRequestState,jdbcType=TINYINT},
+            </if>
+            <if test="bidRequestAmount != null">
+                #{bidRequestAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="currentRate != null">
+                #{currentRate,jdbcType=DECIMAL},
+            </if>
+            <if test="monthes2Return != null">
+                #{monthes2Return,jdbcType=TINYINT},
+            </if>
+            <if test="bidCount != null">
+                #{bidCount,jdbcType=INTEGER},
+            </if>
+            <if test="totalRewardAmount != null">
+                #{totalRewardAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="currentSum != null">
+                #{currentSum,jdbcType=DECIMAL},
+            </if>
+            <if test="title != null">
+                #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="note != null">
+                #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="disableDate != null">
+                #{disableDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser ！= null and createUser.id != null">
+                #{createUser.id,jdbcType=BIGINT},
+            </if>
+            <if test="disableDays != null">
+                #{disableDays,jdbcType=TINYINT},
+            </if>
+            <if test="minBidAmount != null">
+                #{minBidAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="applyTime != null">
+                #{applyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="publishTime != null">
+                #{publishTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.BidRequest">
+        update bid_request
+        <set>
+            version = version + 1,
+            <if test="returnType != null">
+                return_type = #{returnType,jdbcType=TINYINT},
+            </if>
+            <if test="bidRequestType != null">
+                bid_request_type = #{bidRequestType,jdbcType=TINYINT},
+            </if>
+            <if test="bidRequestState != null">
+                bid_request_state = #{bidRequestState,jdbcType=TINYINT},
+            </if>
+            <if test="bidRequestAmount != null">
+                bid_request_amount = #{bidRequestAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="currentRate != null">
+                current_rate = #{currentRate,jdbcType=DECIMAL},
+            </if>
+            <if test="monthes2Return != null">
+                monthes2_return = #{monthes2Return,jdbcType=TINYINT},
+            </if>
+            <if test="bidCount != null">
+                bid_count = #{bidCount,jdbcType=INTEGER},
+            </if>
+            <if test="totalRewardAmount != null">
+                total_reward_amount = #{totalRewardAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="currentSum != null">
+                current_sum = #{currentSum,jdbcType=DECIMAL},
+            </if>
+            <if test="title != null">
+                title = #{title,jdbcType=VARCHAR},
+            </if>
+            <if test="description != null">
+                description = #{description,jdbcType=VARCHAR},
+            </if>
+            <if test="note != null">
+                note = #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="disableDate != null">
+                disable_date = #{disableDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createUser != null and createUser.id != null">
+                create_user_id = #{createUser.id,jdbcType=BIGINT},
+            </if>
+            <if test="disableDays != null">
+                disable_days = #{disableDays,jdbcType=TINYINT},
+            </if>
+            <if test="minBidAmount != null">
+                min_bid_amount = #{minBidAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="applyTime != null">
+                apply_time = #{applyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="publishTime != null">
+                publish_time = #{publishTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT} and version = #{version}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.BidRequest">
+    update bid_request
+    set version = #{version,jdbcType=INTEGER},
+      return_type = #{returnType,jdbcType=TINYINT},
+      bid_request_type = #{bidRequestType,jdbcType=TINYINT},
+      bid_request_state = #{bidRequestState,jdbcType=TINYINT},
+      bid_request_amount = #{bidRequestAmount,jdbcType=DECIMAL},
+      current_rate = #{currentRate,jdbcType=DECIMAL},
+      monthes2_return = #{monthes2Return,jdbcType=TINYINT},
+      bid_count = #{bidCount,jdbcType=INTEGER},
+      total_reward_amount = #{totalRewardAmount,jdbcType=DECIMAL},
+      current_sum = #{currentSum,jdbcType=DECIMAL},
+      title = #{title,jdbcType=VARCHAR},
+      description = #{description,jdbcType=VARCHAR},
+      note = #{note,jdbcType=VARCHAR},
+      disable_date = #{disableDate,jdbcType=TIMESTAMP},
+      create_user_id = #{createUser.id,jdbcType=BIGINT},
+      disable_days = #{disableDays,jdbcType=TINYINT},
+      min_bid_amount = #{minBidAmount,jdbcType=DECIMAL},
+      apply_time = #{applyTime,jdbcType=TIMESTAMP},
+      publish_time = #{publishTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT} AND version = #{version}
+  </update>
+
+    <sql id="condition">
+        <where>
+            <if test = "bidRequestState > -1 ">
+                b.bid_request_state = #{bidRequestState}
+            </if>
+            <if test = "bidRequestState==-1">
+                AND b.bid_request_state IN (1,7,8,9)
+            </if>
+            <if test = "bidRequestStates != null">
+                AND b.bid_request_state IN
+                <foreach collection="bidRequestStates" item="state" open="(" separator="," close=")">
+                    #{state}
+                </foreach>
+            </if>
+        </where>
+    </sql>
+
+    <select id="queryByPageCondition" parameterType="com.yff.base.query.BidRequestQueryObject"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bid_request b INNER JOIN login_info cu ON b.create_user_id = cu.id
+        <include refid="condition"/>
+    </select>
+</mapper>

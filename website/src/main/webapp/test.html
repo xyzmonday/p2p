@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bootstrap 101 Template</title>
+
+<!-- Bootstrap -->
+<link href="/js/bootstrap-3.3.2-dist/css/bootstrap.css" rel="stylesheet">
+
+</head>
+<body>
+
+	<!--栅格系统-->
+	<div class="row" style="height: 400px">
+		<div class="col-xs-1" style="background-color: red;height: 200px;">1</div>
+		<div class="col-xs-8" style="background-color: blue;height: 200px;">8</div>
+		<div class="col-xs-1" style="background-color: yellow;height: 200px;">1</div>
+	</div>
+
+
+
+	<table class="table table-bordered">
+		<thead>
+			<tr>
+				<th>表格头</th>
+				<th>表格头</th>
+				<th>表格头</th>
+				<th>表格头</th>
+				<th>表格头</th>
+			</tr>
+		</thead>
+		<tbody>
+			<tr>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+			</tr>
+			<tr class="success">
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+			</tr>
+			<tr>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+			</tr>
+			<tr>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+			</tr>
+			<tr class="danger">
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+			</tr>
+			<tr>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+				<td>value</td>
+			</tr>
+		</tbody>
+	</table>
+
+	<a href="javascript:;" class="btn btn-success">点击</a>
+	<br />
+	<img alt="" src="/images/juhua.png"
+		style="width: 100px; height: 100px;" class="img-circle img-thumbnail">
+
+	<i class="glyphicon glyphicon-plane"
+		style="color: red; font-size: 200px;"></i>
+
+	<div class="dropup">
+		<button class="btn btn-default dropdown-toggle" type="button"
+			id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true"
+			aria-expanded="false">
+			部门 <span class="caret"></span>
+		</button>
+		<ul class="dropdown-menu" aria-labelledby="dropdownMenu2">
+			<li><a href="#">市场部</a></li>
+			<li><a href="#">技术部</a></li>
+			<li><a href="#">Something else here</a></li>
+			<li><a href="#">Separated link</a></li>
+		</ul>
+	</div>
+
+	<div class="row">
+		<div class="col-xs-1">上传进度:</div>
+		<div class="col-xs-6">
+			<div class="progress">
+				<div class="progress-bar" role="progressbar" aria-valuemin="0"
+					aria-valuemax="100" style="width: 70%;">70%</div>
+			</div>
+		</div>
+	</div>
+
+	<a href="javascript:;" class="btn btn-success" id="openModal">查询窗口</a>
+	
+	<script type="text/javascript">
+		$(function(){
+			$("#openModal").click(function(){
+				$('#myModal').modal({
+					backdrop:"static"
+				}).modal('show');
+			})
+		});
+	</script>
+
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog"
+		aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"
+						aria-label="Close">
+						<span aria-hidden="true">&times;</span>
+					</button>
+					<h4 class="modal-title" id="myModalLabel">查询窗口</h4>
+				</div>
+				<div class="modal-body">
+					<form class="form-inline">
+						<div class="form-group">
+							<label class="sr-only" for="exampleInputEmail3">Email address</label>
+							<input type="email" class="form-control" id="exampleInputEmail3"
+								placeholder="Email">
+						</div>
+						<div class="form-group">
+							<label class="sr-only" for="exampleInputPassword3">Password</label> <input
+								type="password" class="form-control" id="exampleInputPassword3"
+								placeholder="Password">
+						</div>
+						<div class="checkbox">
+							<label> <input type="checkbox"> Remember me
+							</label>
+						</div>
+						<button type="submit" class="btn btn-default">Sign in</button>
+					</form>
+				</div>	
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+					<button type="button" class="btn btn-primary">确认查询</button>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="/js/jquery/jquery-2.1.3.min.js"></script>
+	<script src="/js/bootstrap-3.3.2-dist/js/bootstrap.min.js"></script>
+</body>
+</html>

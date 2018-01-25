@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.IpLogMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.IpLog">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="ip" jdbcType="VARCHAR" property="ip"/>
+        <result column="login_state" jdbcType="TINYINT" property="loginState"/>
+        <result column="username" jdbcType="VARCHAR" property="username"/>
+        <result column="login_info_id" jdbcType="BIGINT" property="loginInfoId"/>
+        <result column="login_type" jdbcType="TINYINT" property="loginType"/>
+        <result column="login_time" jdbcType="TIMESTAMP" property="loginTime"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, ip, login_state, username, login_info_id, login_type, login_time
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from ip_log
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from ip_log
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.IpLog"
+            useGeneratedKeys="true">
+    insert into ip_log (ip, login_state, username, 
+      login_info_id, login_type, login_time
+      )
+    values (#{ip,jdbcType=VARCHAR}, #{loginState,jdbcType=TINYINT}, #{username,jdbcType=VARCHAR}, 
+      #{loginInfoId,jdbcType=BIGINT}, #{loginType,jdbcType=TINYINT}, #{loginTime,jdbcType=TIMESTAMP}
+      )
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.IpLog"
+            useGeneratedKeys="true">
+        insert into ip_log
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="ip != null">
+                ip,
+            </if>
+            <if test="loginState != null">
+                login_state,
+            </if>
+            <if test="username != null">
+                username,
+            </if>
+            <if test="loginInfoId != null">
+                login_info_id,
+            </if>
+            <if test="loginType != null">
+                login_type,
+            </if>
+            <if test="loginTime != null">
+                login_time,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="ip != null">
+                #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="loginState != null">
+                #{loginState,jdbcType=TINYINT},
+            </if>
+            <if test="username != null">
+                #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="loginInfoId != null">
+                #{loginInfoId,jdbcType=BIGINT},
+            </if>
+            <if test="loginType != null">
+                #{loginType,jdbcType=TINYINT},
+            </if>
+            <if test="loginTime != null">
+                #{loginTime,jdbcType=TIMESTAMP},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.IpLog">
+        update ip_log
+        <set>
+            <if test="ip != null">
+                ip = #{ip,jdbcType=VARCHAR},
+            </if>
+            <if test="loginState != null">
+                login_state = #{loginState,jdbcType=TINYINT},
+            </if>
+            <if test="username != null">
+                username = #{username,jdbcType=VARCHAR},
+            </if>
+            <if test="loginInfoId != null">
+                login_info_id = #{loginInfoId,jdbcType=BIGINT},
+            </if>
+            <if test="loginType != null">
+                login_type = #{loginType,jdbcType=TINYINT},
+            </if>
+            <if test="loginTime != null">
+                login_time = #{loginTime,jdbcType=TIMESTAMP},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.IpLog">
+    update ip_log
+    set ip = #{ip,jdbcType=VARCHAR},
+      login_state = #{loginState,jdbcType=TINYINT},
+      username = #{username,jdbcType=VARCHAR},
+      login_info_id = #{loginInfoId,jdbcType=BIGINT},
+      login_type = #{loginType,jdbcType=TINYINT},
+      login_time = #{loginTime,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <sql id="condition">
+        <where>
+            <if test="beginDate != null">
+                AND login_time &gt;= #{beginDate}
+            </if>
+            <if test="endDate != null">
+                AND login_time &lt;= #{endDate}
+            </if>
+
+            <if test="state > -1">
+                AND login_state = #{state}
+            </if>
+
+            <if test="username != null">
+                AND username = #{username}
+            </if>
+            <if test="userType > -1">
+                AND login_type = #{userType}
+            </if>
+        </where>
+    </sql>
+
+    <select id="queryByPageCondition" parameterType="com.yff.base.query.IpLogQueryObject"
+            resultType="com.yff.base.domain.IpLog">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM ip_log
+        <include refid="condition"/>
+        ORDER by login_time DESC
+    </select>
+</mapper>

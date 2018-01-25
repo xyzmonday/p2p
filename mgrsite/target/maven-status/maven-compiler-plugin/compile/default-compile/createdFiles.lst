@@ -1,0 +1,13 @@
+com\yff\base\controller\VedioAuthController.class
+com\yff\base\controller\PlatformBankInfoController.class
+com\yff\base\controller\LoginController.class
+com\yff\base\controller\RealAuthController.class
+com\yff\base\controller\SystemDictionaryController.class
+com\yff\base\listener\InitSystemAccountListener.class
+com\yff\base\controller\IpLogController.class
+com\yff\base\controller\MoneyWithdrawController.class
+com\yff\base\utils\LoginCheckInterceptor.class
+com\yff\base\listener\InitAdminListener.class
+com\yff\base\controller\RechargeOfflineController.class
+com\yff\base\controller\BidRequestController.class
+com\yff\base\controller\UserFileController.class

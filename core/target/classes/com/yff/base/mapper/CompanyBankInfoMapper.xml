@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.CompanyBankInfoMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.CompanyBankInfo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="bank_name" jdbcType="VARCHAR" property="bankName"/>
+        <result column="account_name" jdbcType="VARCHAR" property="accountName"/>
+        <result column="bank_number" jdbcType="VARCHAR" property="bankNumber"/>
+        <result column="bank_fork_name" jdbcType="VARCHAR" property="bankForkName"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, bank_name, account_name, bank_number, bank_fork_name
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from company_bank_info
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from company_bank_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.CompanyBankInfo"
+            useGeneratedKeys="true">
+    insert into company_bank_info (bank_name, account_name, bank_number, 
+      bank_fork_name)
+    values (#{bankName,jdbcType=VARCHAR}, #{accountName,jdbcType=VARCHAR}, #{bankNumber,jdbcType=VARCHAR}, 
+      #{bankForkName,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.CompanyBankInfo"
+            useGeneratedKeys="true">
+        insert into company_bank_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bankName != null">
+                bank_name,
+            </if>
+            <if test="accountName != null">
+                account_name,
+            </if>
+            <if test="bankNumber != null">
+                bank_number,
+            </if>
+            <if test="bankForkName != null">
+                bank_fork_name,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bankName != null">
+                #{bankName,jdbcType=VARCHAR},
+            </if>
+            <if test="accountName != null">
+                #{accountName,jdbcType=VARCHAR},
+            </if>
+            <if test="bankNumber != null">
+                #{bankNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="bankForkName != null">
+                #{bankForkName,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.CompanyBankInfo">
+        update company_bank_info
+        <set>
+            <if test="bankName != null">
+                bank_name = #{bankName,jdbcType=VARCHAR},
+            </if>
+            <if test="accountName != null">
+                account_name = #{accountName,jdbcType=VARCHAR},
+            </if>
+            <if test="bankNumber != null">
+                bank_number = #{bankNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="bankForkName != null">
+                bank_fork_name = #{bankForkName,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.CompanyBankInfo">
+    update company_bank_info
+    set bank_name = #{bankName,jdbcType=VARCHAR},
+      account_name = #{accountName,jdbcType=VARCHAR},
+      bank_number = #{bankNumber,jdbcType=VARCHAR},
+      bank_fork_name = #{bankForkName,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="queryByPageCondition" parameterType="com.yff.base.query.PlatformBankInfoQueryObject" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from company_bank_info
+    </select>
+
+    <select id="queryRowCount" parameterType="long" resultType="int">
+        SELECT COUNT(*) from company_bank_info
+        where id = #{id}
+    </select>
+</mapper>

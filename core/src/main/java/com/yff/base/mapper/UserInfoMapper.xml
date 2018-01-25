@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.UserInfoMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.UserInfo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
+        <result column="bit_state" jdbcType="BIGINT" property="bitState"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="id_number" jdbcType="VARCHAR" property="idNumber"/>
+        <result column="phone_number" jdbcType="VARCHAR" property="phoneNumber"/>
+        <result column="auth_score" jdbcType="INTEGER" property="authScore"/>
+        <result column="real_auth_id" jdbcType="BIGINT" property="realAuthId"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <!--   <result column="income_grade_id" jdbcType="BIGINT" property="id" />
+           <result column="marriage_id" jdbcType="BIGINT" property="id" />
+           <result column="kid_count_id" jdbcType="BIGINT" property="id" />
+           <result column="education_background_id" jdbcType="BIGINT" property="id" />
+           <result column="house_condition_id" jdbcType="BIGINT" property="id" />-->
+        <!--注意这里使用非懒加载，嵌套查询，发送一个sql语句将所有表的信息关联查询出来-->
+        <!--一般来说，如果查询用户信息的时候不需要显示其字典信息，那么可以使用嵌套查询-->
+        <association property="incomeGrade" column="income_grade_id"
+                     select="com.yff.base.mapper.SystemDictionaryItemMapper.selectByPrimaryKey"/>
+        <association property="marriage" column="marriage_id"
+                     select="com.yff.base.mapper.SystemDictionaryItemMapper.selectByPrimaryKey"/>
+        <association property="kidCount" column="kid_count_id"
+                     select="com.yff.base.mapper.SystemDictionaryItemMapper.selectByPrimaryKey"/>
+        <association property="educationBackground" column="education_background_id"
+                     select="com.yff.base.mapper.SystemDictionaryItemMapper.selectByPrimaryKey"/>
+        <association property="houseCondition" column="house_condition_id"
+                     select="com.yff.base.mapper.SystemDictionaryItemMapper.selectByPrimaryKey"/>
+
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, version, bit_state, real_name, id_number, phone_number, income_grade_id, marriage_id, 
+    kid_count_id, education_background_id, auth_score, house_condition_id, real_auth_id, 
+    email
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_info
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from user_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.UserInfo"
+            useGeneratedKeys="true">
+    insert into user_info (id,version, bit_state, real_name,
+      id_number, phone_number, income_grade_id, 
+      marriage_id, kid_count_id, education_background_id, 
+      auth_score, house_condition_id, real_auth_id, 
+      email)
+    values (#{id,jdbcType=BIGINT},0, #{bitState,jdbcType=BIGINT}, #{realName,jdbcType=VARCHAR},
+      #{idNumber,jdbcType=VARCHAR}, #{phoneNumber,jdbcType=VARCHAR}, #{incomeGrade.id,jdbcType=BIGINT},
+      #{marriage.id,jdbcType=BIGINT}, #{kidCount.id,jdbcType=BIGINT}, #{educationBackground.id,jdbcType=BIGINT},
+      #{authScore,jdbcType=INTEGER}, #{houseCondition.id,jdbcType=BIGINT}, #{realAuthId,jdbcType=BIGINT},
+      #{email,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.UserInfo"
+            useGeneratedKeys="true">
+        insert into user_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                id,
+            </if>
+            version,
+            <if test="bitState != null">
+                bit_state,
+            </if>
+            <if test="realName != null">
+                real_name,
+            </if>
+            <if test="idNumber != null">
+                id_number,
+            </if>
+            <if test="phoneNumber != null">
+                phone_number,
+            </if>
+            <if test="incomeGrade != null and incomeGrade.id != null">
+                income_grade_id,
+            </if>
+            <if test="marriage != null and marriage.id != null">
+                marriage_id,
+            </if>
+            <if test="kidCount != null and kidCount.id != null">
+                kid_count_id,
+            </if>
+            <if test="educationBackground != null and educationBackground.id != null">
+                education_background_id,
+            </if>
+            <if test="authScore != null">
+                auth_score,
+            </if>
+            <if test="houseCondition != null and houseCondition.id != null">
+                house_condition_id,
+            </if>
+            <if test="realAuthId != null">
+                real_auth_id,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="id != null">
+                #{id,jdbcType=BIGINT}
+            </if>
+            0,
+            <if test="bitState != null">
+                #{bitState,jdbcType=BIGINT},
+            </if>
+            <if test="realName != null">
+                #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="idNumber != null">
+                #{idNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="phoneNumber != null">
+                #{phoneNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="incomeGrade != null and incomeGrade.id != null">
+                #{incomeGrade.id,jdbcType=BIGINT},
+            </if>
+            <if test="marriage != null and marriage.id != null">
+                #{marriage.id,jdbcType=BIGINT},
+            </if>
+            <if test="kidCount != null and kidCount.id != null">
+                #{kidCount.id,jdbcType=BIGINT},
+            </if>
+            <if test="educationBackground != null and educationBackground.id != null">
+                #{educationBackground.id,jdbcType=BIGINT},
+            </if>
+            <if test="authScore != null">
+                #{authScore,jdbcType=INTEGER},
+            </if>
+            <if test="houseCondition != null and houseCondition.id != null">
+                #{houseCondition.id,jdbcType=BIGINT},
+            </if>
+            <if test="realAuthId != null">
+                #{realAuthId,jdbcType=BIGINT},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.UserInfo">
+        update user_info
+        <set>
+            version = version + 1,
+            <if test="bitState != null">
+                bit_state = #{bitState,jdbcType=BIGINT},
+            </if>
+            <if test="realName != null">
+                real_name = #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="idNumber != null">
+                id_number = #{idNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="phoneNumber != null">
+                phone_number = #{phoneNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="incomeGrade != null and incomeGrade.id != null">
+                income_grade_id = #{incomeGrade.id,jdbcType=BIGINT},
+            </if>
+            <if test="marriage != null and marriage.id != null">
+                marriage_id = #{marriage.id,jdbcType=BIGINT},
+            </if>
+            <if test="kidCount != null and kidCount.id != null">
+                kid_count_id = #{kidCount.id,jdbcType=BIGINT},
+            </if>
+            <if test="educationBackground != null and educationBackground.id != null">
+                education_background_id = #{educationBackground.id,jdbcType=BIGINT},
+            </if>
+            <if test="authScore != null">
+                auth_score = #{authScore,jdbcType=INTEGER},
+            </if>
+            <if test="houseCondition != null and houseCondition.id != null">
+                house_condition_id = #{houseCondition.id,jdbcType=BIGINT},
+            </if>
+            <if test="realAuthId != null">
+                real_auth_id = #{realAuthId,jdbcType=BIGINT},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT} AND version = #{version}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.UserInfo">
+    update user_info
+    set version = version + 1,
+      bit_state = #{bitState,jdbcType=BIGINT},
+      real_name = #{realName,jdbcType=VARCHAR},
+      id_number = #{idNumber,jdbcType=VARCHAR},
+      phone_number = #{phoneNumber,jdbcType=VARCHAR},
+      income_grade_id = #{incomeGrade.id,jdbcType=BIGINT},
+      marriage_id = #{marriage.id,jdbcType=BIGINT},
+      kid_count_id = #{kidCount.id,jdbcType=BIGINT},
+      education_background_id = #{educationBackground.id,jdbcType=BIGINT},
+      house_condition_id = #{houseCondition.id,jdbcType=BIGINT},
+      auth_score = #{authScore,jdbcType=INTEGER},
+      real_auth_id = #{realAuthId,jdbcType=BIGINT},
+      email = #{email,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT} AND version = #{version}
+  </update>
+
+
+    <select id="autoComplete" parameterType="string" resultType="map">
+        select id,username from login_info
+        where username like concat('%',#{keyword},'%')
+    </select>
+</mapper>

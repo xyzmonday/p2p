@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.AccountFlowMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.AccountFlow">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="account_type" jdbcType="TINYINT" property="accountType"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+        <result column="note" jdbcType="VARCHAR" property="note"/>
+        <result column="usable_amount" jdbcType="DECIMAL" property="usableAmount"/>
+        <result column="freezed_amount" jdbcType="DECIMAL" property="freezedAmount"/>
+        <result column="trade_time" jdbcType="TIMESTAMP" property="tradeTime"/>
+        <result column="account_id" jdbcType="BIGINT" property="accountId"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, account_type, amount, note, usable_amount, freezed_amount, trade_time, account_id
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from account_flow
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.AccountFlow"
+            useGeneratedKeys="true">
+    insert into account_flow (account_type, amount, note, 
+      usable_amount, freezed_amount, trade_time, 
+      account_id)
+    values (#{accountType,jdbcType=TINYINT}, #{amount,jdbcType=DECIMAL}, #{note,jdbcType=VARCHAR}, 
+      #{usableAmount,jdbcType=DECIMAL}, #{freezedAmount,jdbcType=DECIMAL}, #{tradeTime,jdbcType=TIMESTAMP}, 
+      #{accountId,jdbcType=BIGINT})
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.AccountFlow"
+            useGeneratedKeys="true">
+        insert into account_flow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="accountType != null">
+                account_type,
+            </if>
+            <if test="amount != null">
+                amount,
+            </if>
+            <if test="note != null">
+                note,
+            </if>
+            <if test="usableAmount != null">
+                usable_amount,
+            </if>
+            <if test="freezedAmount != null">
+                freezed_amount,
+            </if>
+            <if test="tradeTime != null">
+                trade_time,
+            </if>
+            <if test="accountId != null">
+                account_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="accountType != null">
+                #{accountType,jdbcType=TINYINT},
+            </if>
+            <if test="amount != null">
+                #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="note != null">
+                #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="usableAmount != null">
+                #{usableAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="freezedAmount != null">
+                #{freezedAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="tradeTime != null">
+                #{tradeTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="accountId != null">
+                #{accountId,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+
+</mapper>

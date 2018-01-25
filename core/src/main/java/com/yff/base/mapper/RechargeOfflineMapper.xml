@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.RechargeOfflineMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.RechargeOffline">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="state" jdbcType="TINYINT" property="state"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime"/>
+        <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime"/>
+        <result column="trade_code" jdbcType="VARCHAR" property="tradeCode"/>
+        <result column="trade_time" jdbcType="TIMESTAMP" property="tradeTime"/>
+        <result column="amount" jdbcType="DECIMAL" property="amount"/>
+        <result column="note" jdbcType="VARCHAR" property="note"/>
+
+        <!--申请人-->
+        <association property="applier" javaType="com.yff.base.domain.LoginInfo" columnPrefix="ap_">
+            <id property="id" column="id"></id>
+            <result property="username" column="username"></result>
+        </association>
+        <!--审核人-->
+        <association property="auditor" javaType="com.yff.base.domain.LoginInfo" columnPrefix="au_">
+            <id property="id" column="id"></id>
+            <result property="username" column="username"></result>
+        </association>
+
+        <!--充值银行信息-->
+        <association property="bankInfo" javaType="com.yff.base.domain.CompanyBankInfo" columnPrefix="cb_">
+            <id property="id" column="id"/>
+            <result property="bankName" column="bankName"/>
+            <result property="accountName" column="accountName"/>
+            <result property="bankNumber" column="bankNumber"/>
+            <result property="bankForkName" column="bankForkName"/>
+        </association>
+
+    </resultMap>
+    <sql id="Base_Column_List">
+    r.id, r.state, r.remark, r.audit_time, r.apply_time, r.trade_code, r.trade_time,
+    r.amount, r.note,ap.id as ap_id,ap.username as ap_username,au.id as au_id,au.username as au_username,
+    cb.id as cb_id,cb.bank_name as cb_bankName,cb.account_name as cb_accountName,cb.bank_number as cb_bankNumber,
+    cb.bank_fork_name as cb_bankForkName
+
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from recharge_offline r
+        INNER JOIN login_info ap ON r.applier_id = ap.id
+        LEFT JOIN login_info au ON r.auditor_id = au.id
+        INNER JOIN company_bank_info cb ON r.bank_info_id = cb.id
+        where r.id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from recharge_offline
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.RechargeOffline"
+            useGeneratedKeys="true">
+    insert into recharge_offline (state, remark, audit_time, 
+      apply_time, auditor_id, applier_id, 
+      trade_code, trade_time, amount, 
+      note, bank_info_id)
+    values (#{state,jdbcType=TINYINT}, #{remark,jdbcType=VARCHAR}, #{auditTime,jdbcType=TIMESTAMP}, 
+      #{applyTime,jdbcType=TIMESTAMP}, #{auditor.id,jdbcType=BIGINT}, #{applier.id,jdbcType=BIGINT},
+      #{tradeCode,jdbcType=VARCHAR}, #{tradeTime,jdbcType=TIMESTAMP}, #{amount,jdbcType=DECIMAL}, 
+      #{note,jdbcType=VARCHAR}, #{bankInfo.id,jdbcType=BIGINT})
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.RechargeOffline"
+            useGeneratedKeys="true">
+        insert into recharge_offline
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="state != null">
+                state,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="auditTime != null">
+                audit_time,
+            </if>
+            <if test="applyTime != null">
+                apply_time,
+            </if>
+            <if test="auditor != null and auditor.id != null">
+                auditor_id,
+            </if>
+            <if test="applier != null and applier.id != null">
+                applier_id,
+            </if>
+            <if test="tradeCode != null">
+                trade_code,
+            </if>
+            <if test="tradeTime != null">
+                trade_time,
+            </if>
+            <if test="amount != null">
+                amount,
+            </if>
+            <if test="note != null">
+                note,
+            </if>
+            <if test="bankInfo != null and bankInfo.id != null">
+                bank_info_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="state != null">
+                #{state,jdbcType=TINYINT},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="auditTime != null">
+                #{auditTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="applyTime != null">
+                #{applyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="auditor != null and auditor.id != null">
+                #{auditor.id,jdbcType=BIGINT},
+            </if>
+            <if test="applier != null and applier.id != null">
+                #{applier.id,jdbcType=BIGINT},
+            </if>
+            <if test="tradeCode != null">
+                #{tradeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="tradeTime != null">
+                #{tradeTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="amount != null">
+                #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="note != null">
+                #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="bankInfo != null and bankInfo.id != null">
+                #{bankInfo.id,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.RechargeOffline">
+        update recharge_offline
+        <set>
+            <if test="state != null">
+                state = #{state,jdbcType=TINYINT},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="auditTime != null">
+                audit_time = #{auditTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="applyTime != null">
+                apply_time = #{applyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="auditor != null and auditor.id != null">
+                auditor_id = #{auditor.id,jdbcType=BIGINT},
+            </if>
+            <if test="applier != null and applier.id != null">
+                applier_id = #{applier.id,jdbcType=BIGINT},
+            </if>
+            <if test="tradeCode != null">
+                trade_code = #{tradeCode,jdbcType=VARCHAR},
+            </if>
+            <if test="tradeTime != null">
+                trade_time = #{tradeTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="amount != null">
+                amount = #{amount,jdbcType=DECIMAL},
+            </if>
+            <if test="note != null">
+                note = #{note,jdbcType=VARCHAR},
+            </if>
+            <if test="bankInfo != null and bankInfo.id != null">
+                bank_info_id = #{bankInfo.id,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.RechargeOffline">
+    update recharge_offline
+    set state = #{state,jdbcType=TINYINT},
+      remark = #{remark,jdbcType=VARCHAR},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      apply_time = #{applyTime,jdbcType=TIMESTAMP},
+      auditor_id = #{auditor.id,jdbcType=BIGINT},
+      applier_id = #{applier.id,jdbcType=BIGINT},
+      trade_code = #{tradeCode,jdbcType=VARCHAR},
+      trade_time = #{tradeTime,jdbcType=TIMESTAMP},
+      amount = #{amount,jdbcType=DECIMAL},
+      note = #{note,jdbcType=VARCHAR},
+      bank_info_id = #{bankInfo.id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <sql id="condition">
+        <where>
+            <if test="state>-1">
+                AND r.state = #{state}
+            </if>
+            <if test="beginDate!=null">
+                AND r.tradeTime &gt;= #{beginDate}
+            </if>
+            <if test="endDate!=null">
+                AND r.tradeTime &lt;= #{endDate}
+            </if>
+            <if test="applierId!=null">
+                AND r.applier_id = #{applierId}
+            </if>
+
+            <if test="bankInfoId >-1">
+                AND r.bankInfo_id = #{bankInfoId}
+            </if>
+            <if test="tradeCode!=null">
+                AND r.tradeCode = #{tradeCode}
+            </if>
+        </where>
+    </sql>
+
+    <select id="queryByPageCondition" parameterType="com.yff.base.query.RechargeOfflineQueryObject"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from recharge_offline r
+        INNER JOIN login_info ap ON r.applier_id = ap.id
+        LEFT JOIN login_info au ON r.auditor_id = au.id
+        INNER JOIN company_bank_info cb ON r.bank_info_id = cb.id
+        <include refid="condition"/>
+    </select>
+
+</mapper>

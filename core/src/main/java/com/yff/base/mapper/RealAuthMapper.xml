@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.RealAuthMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.RealAuth">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="real_name" jdbcType="VARCHAR" property="realName"/>
+        <result column="sex" jdbcType="TINYINT" property="sex"/>
+        <result column="birth_date" jdbcType="VARCHAR" property="birthDate"/>
+        <result column="id_number" jdbcType="VARCHAR" property="idNumber"/>
+        <result column="address" jdbcType="VARCHAR" property="address"/>
+        <result column="state" jdbcType="TINYINT" property="state"/>
+        <result column="image1" jdbcType="VARCHAR" property="image1"/>
+        <result column="image2" jdbcType="VARCHAR" property="image2"/>
+        <result column="remark" jdbcType="VARCHAR" property="remark"/>
+        <result column="audit_time" jdbcType="TIMESTAMP" property="auditTime"/>
+        <result column="apply_time" jdbcType="TIMESTAMP" property="applyTime"/>
+
+
+        <!--这使用的是关联查询，因为查询审核列表的同时需要该认证申请的申请人，以及审核人-->
+        <!--申请人-->
+        <association property="applier" javaType="com.yff.base.domain.LoginInfo" columnPrefix="ap_">
+            <id property="id" column="id"></id>
+            <result property="username" column="username"></result>
+        </association>
+        <!--审核人-->
+        <association property="auditor" javaType="com.yff.base.domain.LoginInfo" columnPrefix="au_">
+            <id property="id" column="id"></id>
+            <result property="username" column="username"></result>
+        </association>
+        <!-- <result column="auditor_id" jdbcType="BIGINT" property="auditorId" />
+         <result column="applier_id" jdbcType="BIGINT" property="applierId" />-->
+    </resultMap>
+
+    <sql id="Base_Column_List">
+         r.id, r.real_name, r.sex, r.birth_date, r.id_number, r.address, r.state, r.image1,
+         r.image2, r.remark, r.audit_time, r.apply_time , ap.id as ap_id ,ap.username as ap_username ,
+        au.id as au_id ,au.username as au_username
+    </sql>
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        FROM real_auth r
+        INNER JOIN login_info ap ON r.applier_id = ap.id
+        LEFT JOIN login_info au ON r.auditor_id = au.id
+        where r.id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <sql id="condition">
+        <where>
+            <if test="beginDate != null">
+                AND r.apply_time &gt;= #{beginDate}
+            </if>
+            <if test="endDate != null">
+                AND r.apply_time &lt;= #{endDate}
+            </if>
+            <if test="state > -1">
+                AND r.state = #{state}
+            </if>
+        </where>
+    </sql>
+
+    <select id="queryByPageCondition" parameterType="com.yff.base.query.RealAuthQueryObject" resultMap="BaseResultMap">
+        SELECT
+        <include refid="Base_Column_List"/>
+        FROM real_auth r
+        INNER JOIN login_info ap ON r.applier_id = ap.id
+        LEFT JOIN login_info au ON r.auditor_id = au.id
+        <include refid="condition"></include>
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from real_auth
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.RealAuth"
+            useGeneratedKeys="true">
+    insert into real_auth (real_name, sex, birth_date, 
+      id_number, address, state, 
+      image1, image2, remark, 
+      audit_time, apply_time, auditor_id, 
+      applier_id)
+    values (#{realName,jdbcType=VARCHAR}, #{sex,jdbcType=TINYINT}, #{birthDate,jdbcType=VARCHAR}, 
+      #{idNumber,jdbcType=VARCHAR}, #{address,jdbcType=VARCHAR}, #{state,jdbcType=TINYINT}, 
+      #{image1,jdbcType=VARCHAR}, #{image2,jdbcType=VARCHAR}, #{remark,jdbcType=VARCHAR}, 
+      #{auditTime,jdbcType=TIMESTAMP}, #{applyTime,jdbcType=TIMESTAMP}, #{auditor.id,jdbcType=BIGINT},
+      #{applier.id,jdbcType=BIGINT})
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.RealAuth"
+            useGeneratedKeys="true">
+        insert into real_auth
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="realName != null">
+                real_name,
+            </if>
+            <if test="sex != null">
+                sex,
+            </if>
+            <if test="birthDate != null">
+                birth_date,
+            </if>
+            <if test="idNumber != null">
+                id_number,
+            </if>
+            <if test="address != null">
+                address,
+            </if>
+            <if test="state != null">
+                state,
+            </if>
+            <if test="image1 != null">
+                image1,
+            </if>
+            <if test="image2 != null">
+                image2,
+            </if>
+            <if test="remark != null">
+                remark,
+            </if>
+            <if test="auditTime != null">
+                audit_time,
+            </if>
+            <if test="applyTime != null">
+                apply_time,
+            </if>
+            <if test="auditor != null and auditor.id != null">
+                auditor_id,
+            </if>
+            <if test="applier != null and applier.id != null">
+                applier_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="realName != null">
+                #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                #{sex,jdbcType=TINYINT},
+            </if>
+            <if test="birthDate != null">
+                #{birthDate,jdbcType=VARCHAR},
+            </if>
+            <if test="idNumber != null">
+                #{idNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=TINYINT},
+            </if>
+            <if test="image1 != null">
+                #{image1,jdbcType=VARCHAR},
+            </if>
+            <if test="image2 != null">
+                #{image2,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="auditTime != null">
+                #{auditTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="applyTime != null">
+                #{applyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="auditor !=null and auditor.id != null">
+                #{auditor.id,jdbcType=BIGINT},
+            </if>
+            <if test="applier !=null and applier.id != null">
+                #{applier.id,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.RealAuth">
+        update real_auth
+        <set>
+            <if test="realName != null">
+                real_name = #{realName,jdbcType=VARCHAR},
+            </if>
+            <if test="sex != null">
+                sex = #{sex,jdbcType=TINYINT},
+            </if>
+            <if test="birthDate != null">
+                birth_date = #{birthDate,jdbcType=VARCHAR},
+            </if>
+            <if test="idNumber != null">
+                id_number = #{idNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="address != null">
+                address = #{address,jdbcType=VARCHAR},
+            </if>
+            <if test="state != null">
+                state = #{state,jdbcType=TINYINT},
+            </if>
+            <if test="image1 != null">
+                image1 = #{image1,jdbcType=VARCHAR},
+            </if>
+            <if test="image2 != null">
+                image2 = #{image2,jdbcType=VARCHAR},
+            </if>
+            <if test="remark != null">
+                remark = #{remark,jdbcType=VARCHAR},
+            </if>
+            <if test="auditTime != null">
+                audit_time = #{auditTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="applyTime != null">
+                apply_time = #{applyTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="auditor != null and auditor.id != null">
+                auditor_id = #{auditor.id,jdbcType=BIGINT},
+            </if>
+            <if test="applier != null and applier.id != null">
+                applier_id = #{applier.id,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.RealAuth">
+    update real_auth
+    set real_name = #{realName,jdbcType=VARCHAR},
+      sex = #{sex,jdbcType=TINYINT},
+      birth_date = #{birthDate,jdbcType=VARCHAR},
+      id_number = #{idNumber,jdbcType=VARCHAR},
+      address = #{address,jdbcType=VARCHAR},
+      state = #{state,jdbcType=TINYINT},
+      image1 = #{image1,jdbcType=VARCHAR},
+      image2 = #{image2,jdbcType=VARCHAR},
+      remark = #{remark,jdbcType=VARCHAR},
+      audit_time = #{auditTime,jdbcType=TIMESTAMP},
+      apply_time = #{applyTime,jdbcType=TIMESTAMP},
+      auditor_id = #{auditor.id,jdbcType=BIGINT},
+      applier_id = #{applier.id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+</mapper>

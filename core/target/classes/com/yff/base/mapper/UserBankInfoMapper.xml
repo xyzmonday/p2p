@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.UserBankInfoMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.UserBankInfo">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="bank_name" jdbcType="VARCHAR" property="bankName"/>
+        <result column="account_name" jdbcType="VARCHAR" property="accountName"/>
+        <result column="account_number" jdbcType="VARCHAR" property="accountNumber"/>
+        <result column="bank_fork_name" jdbcType="VARCHAR" property="bankForkName"/>
+        <!--<result column="login_info_id" jdbcType="BIGINT" property="loginInfoId" />-->
+        <association property="loginInfo" javaType="com.yff.base.domain.LoginInfo" columnPrefix="ap_">
+            <id property="id" column="id"></id>
+            <result property="username" column="username"></result>
+        </association>
+    </resultMap>
+    <sql id="Base_Column_List">
+    u.id, u.bank_name, u.account_name, u.account_number, u.bank_fork_name, b.id as b_id,b.username as b_username
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from user_bank_info u INNER JOIN login_info b ON u.login_info_id = b.id
+        where u.id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from user_bank_info
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.UserBankInfo"
+            useGeneratedKeys="true">
+    insert into user_bank_info (bank_name, account_name, account_number, 
+      bank_fork_name, login_info_id)
+    values (#{bankName,jdbcType=VARCHAR}, #{accountName,jdbcType=VARCHAR}, #{accountNumber,jdbcType=VARCHAR}, 
+      #{bankForkName,jdbcType=VARCHAR}, #{loginInfo.id,jdbcType=BIGINT})
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.UserBankInfo"
+            useGeneratedKeys="true">
+        insert into user_bank_info
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="bankName != null">
+                bank_name,
+            </if>
+            <if test="accountName != null">
+                account_name,
+            </if>
+            <if test="accountNumber != null">
+                account_number,
+            </if>
+            <if test="bankForkName != null">
+                bank_fork_name,
+            </if>
+            <if test="loginInfo != null and loginInfo.id != null">
+                login_info_id,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="bankName != null">
+                #{bankName,jdbcType=VARCHAR},
+            </if>
+            <if test="accountName != null">
+                #{accountName,jdbcType=VARCHAR},
+            </if>
+            <if test="accountNumber != null">
+                #{accountNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="bankForkName != null">
+                #{bankForkName,jdbcType=VARCHAR},
+            </if>
+            <if test="loginInfo != null and loginInfo.id != null">
+                #{loginInfo.id,jdbcType=BIGINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.UserBankInfo">
+        update user_bank_info
+        <set>
+            <if test="bankName != null">
+                bank_name = #{bankName,jdbcType=VARCHAR},
+            </if>
+            <if test="accountName != null">
+                account_name = #{accountName,jdbcType=VARCHAR},
+            </if>
+            <if test="accountNumber != null">
+                account_number = #{accountNumber,jdbcType=VARCHAR},
+            </if>
+            <if test="bankForkName != null">
+                bank_fork_name = #{bankForkName,jdbcType=VARCHAR},
+            </if>
+            <if test="loginInfo != null and loginInfo.id != null">
+                login_info_id = #{loginInfo.id,jdbcType=BIGINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.UserBankInfo">
+    update user_bank_info
+    set bank_name = #{bankName,jdbcType=VARCHAR},
+      account_name = #{accountName,jdbcType=VARCHAR},
+      account_number = #{accountNumber,jdbcType=VARCHAR},
+      bank_fork_name = #{bankForkName,jdbcType=VARCHAR},
+      login_info_id = #{loginInfo.id,jdbcType=BIGINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="selectByUserId" resultMap="BaseResultMap"  >
+        select
+        <include refid="Base_Column_List"/>
+        from user_bank_info u INNER JOIN login_info b ON u.login_info_id = b.id
+        where u.login_info_id = #{userId,jdbcType=BIGINT}
+    </select>
+
+
+</mapper>

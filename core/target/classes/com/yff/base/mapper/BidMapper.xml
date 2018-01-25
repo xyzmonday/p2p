@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.BidMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.Bid">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="actual_rate" jdbcType="DECIMAL" property="actualRate"/>
+        <result column="available_amount" jdbcType="DECIMAL" property="availableAmount"/>
+        <result column="bid_request_id" jdbcType="BIGINT" property="bidRequestId"/>
+        <result column="bid_time" jdbcType="TIMESTAMP" property="bidTime"/>
+        <result column="bid_request_title" jdbcType="VARCHAR" property="bidRequestTitle"/>
+        <result column="bid_request_state" jdbcType="TINYINT" property="bidRequestState"/>
+
+        <!--这里使用内联查询，因为查询投标内容的同时需要显示投标人-->
+        <association property="bidUser" javaType="com.yff.base.domain.LoginInfo" columnPrefix="cu_">
+            <id property="id" column="id"></id>
+            <result property="username" column="username"></result>
+        </association>
+    </resultMap>
+
+    <sql id="Base_Column_List">
+      b.id, b.actual_rate, b.available_amount, b.bid_request_id, b.bid_time, b.bid_request_title,b.bid_request_state,
+      cu.id as cu_id,cu.username as cu_username
+    </sql>
+
+
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bid b INNER JOIN login_info cu ON b.bid_user_id = cu.id
+        where b.id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from bid
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.Bid" useGeneratedKeys="true">
+    insert into bid (actual_rate, available_amount, bid_request_id, 
+      bid_user_id, bid_time, bid_request_title,b.bid_request_state
+      )
+    values (#{actualRate,jdbcType=DECIMAL}, #{availableAmount,jdbcType=DECIMAL}, #{bidRequestId,jdbcType=BIGINT}, 
+      #{bidUser.id,jdbcType=BIGINT}, #{bidTime,jdbcType=TIMESTAMP}, #{bidRequestTitle,jdbcType=VARCHAR},
+      #{bidRequestState,jdbcType=TINYINT}
+      )
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.Bid"
+            useGeneratedKeys="true">
+        insert into bid
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="actualRate != null">
+                actual_rate,
+            </if>
+            <if test="availableAmount != null">
+                available_amount,
+            </if>
+            <if test="bidRequestId != null">
+                bid_request_id,
+            </if>
+            <if test="bidUser != null and bidUser.id != null">
+                bid_user_id,
+            </if>
+            <if test="bidTime != null">
+                bid_time,
+            </if>
+            <if test="bidRequestTitle != null">
+                bid_request_title,
+            </if>
+            <if test="bidRequestState != null">
+                bid_request_state,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="actualRate != null">
+                #{actualRate,jdbcType=DECIMAL},
+            </if>
+            <if test="availableAmount != null">
+                #{availableAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="bidRequestId != null">
+                #{bidRequestId,jdbcType=BIGINT},
+            </if>
+            <if test="bidUser != null and bidUser.id != null">
+                #{bidUser.id,jdbcType=BIGINT},
+            </if>
+            <if test="bidTime != null">
+                #{bidTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="bidRequestTitle != null">
+                #{bidRequestTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="bidRequestState != null">
+                #{bidRequestState,jdbcType=TINYINT},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.Bid">
+        update bid
+        <set>
+            <if test="actualRate != null">
+                actual_rate = #{actualRate,jdbcType=DECIMAL},
+            </if>
+            <if test="availableAmount != null">
+                available_amount = #{availableAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="bidRequestId != null">
+                bid_request_id = #{bidRequestId,jdbcType=BIGINT},
+            </if>
+            <if test="bidUser != null and bidUser.id != null">
+                bid_user_id = #{bidUser.id,jdbcType=BIGINT},
+            </if>
+            <if test="bidTime != null">
+                bid_time = #{bidTime,jdbcType=TIMESTAMP},
+            </if>
+            <if test="bidRequestTitle != null">
+                bid_request_title = #{bidRequestTitle,jdbcType=VARCHAR},
+            </if>
+            <if test="bidRequestState != null">
+                bid_request_state = #{bidRequestState,jdbcType=TINYINT},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.Bid">
+    update bid
+    set actual_rate = #{actualRate,jdbcType=DECIMAL},
+      available_amount = #{availableAmount,jdbcType=DECIMAL},
+      bid_request_id = #{bidRequestId,jdbcType=BIGINT},
+      bid_user_id = #{bidUser.id,jdbcType=BIGINT},
+      bid_time = #{bidTime,jdbcType=TIMESTAMP},
+      bid_request_title = #{bidRequestTitle,jdbcType=VARCHAR}
+      bid_request_state = #{bidReqeustId,jdbcType=TINYINT}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <!--仅仅给bidRequest做嵌套查询-->
+    <select id="selectByBidRequestId" parameterType="long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from bid b INNER JOIN login_info cu ON b.bid_user_id = cu.id
+        where b.bid_request_id = #{bidRequestId}
+    </select>
+
+    <select id="updateBidState" parameterType="map">
+        update bid set bid_request_state = #{state} where bid_request_id = #{bidRequestId}
+    </select>
+</mapper>

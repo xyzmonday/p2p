@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.SystemAccountMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.SystemAccount">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="version" jdbcType="INTEGER" property="version"/>
+        <result column="begin_date" jdbcType="TIMESTAMP" property="beginDate"/>
+        <result column="end_date" jdbcType="TIMESTAMP" property="endDate"/>
+        <result column="create_date" jdbcType="TIMESTAMP" property="createDate"/>
+        <result column="usable_amount" jdbcType="DECIMAL" property="usableAmount"/>
+        <result column="freezed_amount" jdbcType="DECIMAL" property="freezedAmount"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, version, begin_date, end_date, create_date, usable_amount, freezed_amount
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from system_account
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.SystemAccount"
+            useGeneratedKeys="true">
+    insert into system_account (version, begin_date, end_date, 
+      create_date, usable_amount, freezed_amount
+      )
+    values (0, #{beginDate,jdbcType=TIMESTAMP}, #{endDate,jdbcType=TIMESTAMP},
+      #{createDate,jdbcType=TIMESTAMP}, #{usableAmount,jdbcType=DECIMAL}, #{freezedAmount,jdbcType=DECIMAL}
+      )
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.SystemAccount"
+            useGeneratedKeys="true">
+        insert into system_account
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            version,
+            <if test="beginDate != null">
+                begin_date,
+            </if>
+            <if test="endDate != null">
+                end_date,
+            </if>
+            <if test="createDate != null">
+                create_date,
+            </if>
+            <if test="usableAmount != null">
+                usable_amount,
+            </if>
+            <if test="freezedAmount != null">
+                freezed_amount,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            0,
+            <if test="beginDate != null">
+                #{beginDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endDate != null">
+                #{endDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDate != null">
+                #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="usableAmount != null">
+                #{usableAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="freezedAmount != null">
+                #{freezedAmount,jdbcType=DECIMAL},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.SystemAccount">
+        update system_account
+        <set>
+            version =version + 1,
+            <if test="beginDate != null">
+                begin_date = #{beginDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="endDate != null">
+                end_date = #{endDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="createDate != null">
+                create_date = #{createDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="usableAmount != null">
+                usable_amount = #{usableAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="freezedAmount != null">
+                freezed_amount = #{freezedAmount,jdbcType=DECIMAL},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT} AND version = #{version}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.SystemAccount">
+    update system_account
+    set version = version +1 ,
+      usable_amount = #{usableAmount,jdbcType=DECIMAL},
+      freezed_amount = #{freezedAmount,jdbcType=DECIMAL}
+    where id = #{id,jdbcType=BIGINT} AND version = #{version}
+  </update>
+
+
+    <select id="selectCurrent" resultMap="BaseResultMap">
+        select id, version, usable_amount, freezed_amount
+        from system_account
+    </select>
+</mapper>

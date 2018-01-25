@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.EmailActiveMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.EmailActive">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="login_info_id" jdbcType="BIGINT" property="loginInfoId"/>
+        <result column="email" jdbcType="VARCHAR" property="email"/>
+        <result column="send_date" jdbcType="TIMESTAMP" property="sendDate"/>
+        <result column="uuid" jdbcType="VARCHAR" property="uuid"/>
+    </resultMap>
+    <sql id="Base_Column_List">
+    id, login_info_id, email, send_date, uuid
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from email_active
+        where id = #{id,jdbcType=BIGINT}
+    </select>
+    <delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from email_active
+    where id = #{id,jdbcType=BIGINT}
+  </delete>
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.EmailActive"
+            useGeneratedKeys="true">
+    insert into email_active (login_info_id, email, send_date, 
+      uuid)
+    values (#{loginInfoId,jdbcType=BIGINT}, #{email,jdbcType=VARCHAR}, #{sendDate,jdbcType=TIMESTAMP}, 
+      #{uuid,jdbcType=VARCHAR})
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.EmailActive"
+            useGeneratedKeys="true">
+        insert into email_active
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="loginInfoId != null">
+                login_info_id,
+            </if>
+            <if test="email != null">
+                email,
+            </if>
+            <if test="sendDate != null">
+                send_date,
+            </if>
+            <if test="uuid != null">
+                uuid,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="loginInfoId != null">
+                #{loginInfoId,jdbcType=BIGINT},
+            </if>
+            <if test="email != null">
+                #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="sendDate != null">
+                #{sendDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="uuid != null">
+                #{uuid,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.EmailActive">
+        update email_active
+        <set>
+            <if test="loginInfoId != null">
+                login_info_id = #{loginInfoId,jdbcType=BIGINT},
+            </if>
+            <if test="email != null">
+                email = #{email,jdbcType=VARCHAR},
+            </if>
+            <if test="sendDate != null">
+                send_date = #{sendDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="uuid != null">
+                uuid = #{uuid,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.EmailActive">
+    update email_active
+    set login_info_id = #{loginInfoId,jdbcType=BIGINT},
+      email = #{email,jdbcType=VARCHAR},
+      send_date = #{sendDate,jdbcType=TIMESTAMP},
+      uuid = #{uuid,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+    <select id="selectByUuid"
+            parameterType="string" resultType="com.yff.base.domain.EmailActive">
+        select
+        <include refid="Base_Column_List"/>
+        from email_active
+        where uuid = #{uuid}
+    </select>
+</mapper>

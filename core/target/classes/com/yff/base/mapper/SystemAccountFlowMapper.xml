@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.SystemAccountFlowMapper">
+  <resultMap id="BaseResultMap" type="com.yff.base.domain.SystemAccountFlow">
+    <id column="id" jdbcType="BIGINT" property="id" />
+    <result column="created_date" jdbcType="TIMESTAMP" property="createdDate" />
+    <result column="account_type" jdbcType="TINYINT" property="accountType" />
+    <result column="note" jdbcType="VARCHAR" property="note" />
+    <result column="amount" jdbcType="DECIMAL" property="amount" />
+    <result column="usable_amount" jdbcType="DECIMAL" property="usableAmount" />
+    <result column="freezed_amount" jdbcType="DECIMAL" property="freezedAmount" />
+    <result column="account_id" jdbcType="BIGINT" property="accountId" />
+  </resultMap>
+  <sql id="Base_Column_List">
+    id, created_date, account_type, note, amount, usable_amount, freezed_amount, account_id
+  </sql>
+
+  <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.SystemAccountFlow" useGeneratedKeys="true">
+    insert into system_account_flow (created_date, account_type, note, 
+      amount, usable_amount, freezed_amount, 
+      account_id)
+    values (#{createdDate,jdbcType=TIMESTAMP}, #{accountType,jdbcType=TINYINT}, #{note,jdbcType=VARCHAR}, 
+      #{amount,jdbcType=DECIMAL}, #{usableAmount,jdbcType=DECIMAL}, #{freezedAmount,jdbcType=DECIMAL}, 
+      #{accountId,jdbcType=BIGINT})
+  </insert>
+  <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.SystemAccountFlow" useGeneratedKeys="true">
+    insert into system_account_flow
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="createdDate != null">
+        created_date,
+      </if>
+      <if test="accountType != null">
+        account_type,
+      </if>
+      <if test="note != null">
+        note,
+      </if>
+      <if test="amount != null">
+        amount,
+      </if>
+      <if test="usableAmount != null">
+        usable_amount,
+      </if>
+      <if test="freezedAmount != null">
+        freezed_amount,
+      </if>
+      <if test="accountId != null">
+        account_id,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="createdDate != null">
+        #{createdDate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="accountType != null">
+        #{accountType,jdbcType=TINYINT},
+      </if>
+      <if test="note != null">
+        #{note,jdbcType=VARCHAR},
+      </if>
+      <if test="amount != null">
+        #{amount,jdbcType=DECIMAL},
+      </if>
+      <if test="usableAmount != null">
+        #{usableAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="freezedAmount != null">
+        #{freezedAmount,jdbcType=DECIMAL},
+      </if>
+      <if test="accountId != null">
+        #{accountId,jdbcType=BIGINT},
+      </if>
+    </trim>
+  </insert>
+
+</mapper>

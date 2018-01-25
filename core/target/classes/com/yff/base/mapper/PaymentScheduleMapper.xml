@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.yff.base.mapper.PaymentScheduleMapper">
+    <resultMap id="BaseResultMap" type="com.yff.base.domain.PaymentSchedule">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="dead_line" jdbcType="TIMESTAMP" property="deadLine"/>
+        <result column="pay_date" jdbcType="TIMESTAMP" property="payDate"/>
+        <result column="total_amount" jdbcType="DECIMAL" property="totalAmount"/>
+        <result column="principal" jdbcType="DECIMAL" property="principal"/>
+        <result column="interest" jdbcType="DECIMAL" property="interest"/>
+        <result column="month_index" jdbcType="TINYINT" property="monthIndex"/>
+        <result column="state" jdbcType="TINYINT" property="state"/>
+        <result column="bid_request_type" jdbcType="TINYINT" property="bidRequestType"/>
+        <result column="return_type" jdbcType="TINYINT" property="returnType"/>
+        <result column="bid_request_id" jdbcType="BIGINT" property="bidRequestId"/>
+        <result column="bid_request_title" jdbcType="VARCHAR" property="bidRequestTitle"/>
+        <!--<result column="borrow_user_id" jdbcType="BIGINT" property="borrowUserId"/>-->
+        <association property="borrowUser" javaType="com.yff.base.domain.LoginInfo" columnPrefix="b_">
+            <id property="id" column="id"></id>
+            <result property="username" column="username"/>
+        </association>
+        <collection property="paymentScheduleDetails" column="id" ofType="com.yff.base.domain.PaymentScheduleDetail"
+                    select="com.yff.base.mapper.PaymentScheduleDetailMapper.selectByPaymentScheduleId"></collection>
+    </resultMap>
+    <sql id="Base_Column_List">
+    p.id, p.dead_line, p.pay_date, p.total_amount, p.principal, p.interest, p.month_index, p.state, p.bid_request_type,
+    p.return_type, p.bid_request_id, p.bid_request_title,b.id as b_id,b.username as b_username
+  </sql>
+    <select id="selectByPrimaryKey" parameterType="java.lang.Long" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from payment_schedule p
+        INNER JOIN login_info b ON p.borrow_user_id = b.id
+        where p.id = #{id,jdbcType=BIGINT}
+    </select>
+
+    <insert id="insert" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.PaymentSchedule"
+            useGeneratedKeys="true">
+    insert into payment_schedule (dead_line, pay_date, total_amount, 
+      principal, interest, month_index, 
+      state, bid_request_type, return_type, 
+      bid_request_id, borrow_user_id, bid_request_title
+      )
+    values (#{deadLine,jdbcType=TIMESTAMP}, #{payDate,jdbcType=TIMESTAMP}, #{totalAmount,jdbcType=DECIMAL}, 
+      #{principal,jdbcType=DECIMAL}, #{interest,jdbcType=DECIMAL}, #{monthIndex,jdbcType=TINYINT}, 
+      #{state,jdbcType=TINYINT}, #{bidRequestType,jdbcType=TINYINT}, #{returnType,jdbcType=TINYINT}, 
+      #{bidRequestId,jdbcType=BIGINT}, #{borrowUser.id,jdbcType=BIGINT}, #{bidRequestTitle,jdbcType=VARCHAR}
+      )
+  </insert>
+    <insert id="insertSelective" keyColumn="id" keyProperty="id" parameterType="com.yff.base.domain.PaymentSchedule"
+            useGeneratedKeys="true">
+        insert into payment_schedule
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="deadLine != null">
+                dead_line,
+            </if>
+            <if test="payDate != null">
+                pay_date,
+            </if>
+            <if test="totalAmount != null">
+                total_amount,
+            </if>
+            <if test="principal != null">
+                principal,
+            </if>
+            <if test="interest != null">
+                interest,
+            </if>
+            <if test="monthIndex != null">
+                month_index,
+            </if>
+            <if test="state != null">
+                state,
+            </if>
+            <if test="bidRequestType != null">
+                bid_request_type,
+            </if>
+            <if test="returnType != null">
+                return_type,
+            </if>
+            <if test="bidRequestId != null">
+                bid_request_id,
+            </if>
+            <if test="borrowUser != null and borrowUser.id != null">
+                borrow_user_id,
+            </if>
+            <if test="bidRequestTitle != null">
+                bid_request_title,
+            </if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="deadLine != null">
+                #{deadLine,jdbcType=TIMESTAMP},
+            </if>
+            <if test="payDate != null">
+                #{payDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="totalAmount != null">
+                #{totalAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="principal != null">
+                #{principal,jdbcType=DECIMAL},
+            </if>
+            <if test="interest != null">
+                #{interest,jdbcType=DECIMAL},
+            </if>
+            <if test="monthIndex != null">
+                #{monthIndex,jdbcType=TINYINT},
+            </if>
+            <if test="state != null">
+                #{state,jdbcType=TINYINT},
+            </if>
+            <if test="bidRequestType != null">
+                #{bidRequestType,jdbcType=TINYINT},
+            </if>
+            <if test="returnType != null">
+                #{returnType,jdbcType=TINYINT},
+            </if>
+            <if test="borrowUser != null and borrowUser.id != null">
+                #{borrowUser.id,jdbcType=BIGINT},
+            </if>
+            <if test="borrowUserId != null">
+                #{borrowUserId,jdbcType=BIGINT},
+            </if>
+            <if test="bidRequestTitle != null">
+                #{bidRequestTitle,jdbcType=VARCHAR},
+            </if>
+        </trim>
+    </insert>
+    <update id="updateByPrimaryKeySelective" parameterType="com.yff.base.domain.PaymentSchedule">
+        update payment_schedule
+        <set>
+            <if test="deadLine != null">
+                dead_line = #{deadLine,jdbcType=TIMESTAMP},
+            </if>
+            <if test="payDate != null">
+                pay_date = #{payDate,jdbcType=TIMESTAMP},
+            </if>
+            <if test="totalAmount != null">
+                total_amount = #{totalAmount,jdbcType=DECIMAL},
+            </if>
+            <if test="principal != null">
+                principal = #{principal,jdbcType=DECIMAL},
+            </if>
+            <if test="interest != null">
+                interest = #{interest,jdbcType=DECIMAL},
+            </if>
+            <if test="monthIndex != null">
+                month_index = #{monthIndex,jdbcType=TINYINT},
+            </if>
+            <if test="state != null">
+                state = #{state,jdbcType=TINYINT},
+            </if>
+            <if test="bidRequestType != null">
+                bid_request_type = #{bidRequestType,jdbcType=TINYINT},
+            </if>
+            <if test="returnType != null">
+                return_type = #{returnType,jdbcType=TINYINT},
+            </if>
+            <if test="bidRequestId != null">
+                bid_request_id = #{bidRequestId,jdbcType=BIGINT},
+            </if>
+            <if test="borrowUser != null and borrowUser.id != null">
+                borrow_user_id = #{borrowUser.id,jdbcType=BIGINT},
+            </if>
+            <if test="bidRequestTitle != null">
+                bid_request_title = #{bidRequestTitle,jdbcType=VARCHAR},
+            </if>
+        </set>
+        where id = #{id,jdbcType=BIGINT}
+    </update>
+    <update id="updateByPrimaryKey" parameterType="com.yff.base.domain.PaymentSchedule">
+    update payment_schedule
+    set dead_line = #{deadLine,jdbcType=TIMESTAMP},
+      pay_date = #{payDate,jdbcType=TIMESTAMP},
+      total_amount = #{totalAmount,jdbcType=DECIMAL},
+      principal = #{principal,jdbcType=DECIMAL},
+      interest = #{interest,jdbcType=DECIMAL},
+      month_index = #{monthIndex,jdbcType=TINYINT},
+      state = #{state,jdbcType=TINYINT},
+      bid_request_type = #{bidRequestType,jdbcType=TINYINT},
+      return_type = #{returnType,jdbcType=TINYINT},
+      bid_request_id = #{bidRequestId,jdbcType=BIGINT},
+      borrow_user_id = #{borrowUser.id,jdbcType=BIGINT},
+      bid_request_title = #{bidRequestTitle,jdbcType=VARCHAR}
+    where id = #{id,jdbcType=BIGINT}
+  </update>
+
+
+    <sql id="condition">
+        <where>
+            <if test="state>-1">
+                AND p.state = #{state}
+            </if>
+            <if test="beginDate!=null">
+                AND p.deadLine &gt;= #{beginDate}
+            </if>
+            <if test="endDate!=null">
+                AND p.deadLine &lt;= #{endDate}
+            </if>
+            <if test="loginInfoId > -1 ">
+                AND P.borrow_user_id = #{loginInfoId}
+            </if>
+            <if test="bidRequestId!=null">
+                AND p.bid_request_id = #{bidRequestId}
+            </if>
+        </where>
+    </sql>
+
+    <select id="queryByPageCondition" parameterType="com.yff.base.query.PaymentScheduleQueryObject"
+            resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from payment_schedule p
+        INNER JOIN login_info b ON p.borrow_user_id = b.id
+        <include refid="condition"></include>
+    </select>
+
+
+</mapper>
